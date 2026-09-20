@@ -235,7 +235,7 @@ resource "aws_iam_role_policy_attachment" "ecr" {
 
 resource "aws_eks_cluster" "eks" {
 
-  name     = "naresh"
+  name     = "aniket-eks"
   role_arn = aws_iam_role.cluster_role.arn
   version  = var.cluster_version
 
@@ -270,9 +270,9 @@ resource "aws_eks_node_group" "node_group" {
     aws_subnet.private1.id,
     aws_subnet.private2.id
   ]
-  
-    
-  instance_types = ["t3.medium"]
+
+
+  instance_types = ["c7i-flex.large"]
 
   scaling_config {
 
@@ -297,18 +297,18 @@ resource "aws_eks_node_group" "node_group" {
 
 resource "aws_instance" "eks" {
     ami           = "ami-02dfbd4ff395f2a1b"
-    instance_type = "t2.medium"
+    instance_type = "c7i-flex.large"
     subnet_id     = aws_subnet.public1.id
     vpc_security_group_ids = [aws_security_group.allow_all.id]
     root_block_device {
       volume_size = "30"
     }
-   
-    
+
+
     tags = {
         Name = "eks"
     }
-    
+
     user_data = <<-EOF
                 #!/bin/bash
                 # Update system
@@ -332,7 +332,7 @@ resource "aws_instance" "eks" {
                 eksctl version || true
 
                 EOF
-  
+
 }
 ############################
 # EKS ADDONS
